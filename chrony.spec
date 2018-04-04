@@ -5,12 +5,12 @@
 # Source0 file verified with key 0x5FF06F29BA1E013B (mlichvar@redhat.com)
 #
 Name     : chrony
-Version  : 3.2
-Release  : 2
-URL      : https://download.tuxfamily.org/chrony/chrony-3.2.tar.gz
-Source0  : https://download.tuxfamily.org/chrony/chrony-3.2.tar.gz
+Version  : 3.3
+Release  : 3
+URL      : https://download.tuxfamily.org/chrony/chrony-3.3.tar.gz
+Source0  : https://download.tuxfamily.org/chrony/chrony-3.3.tar.gz
 Source1  : chrony.tmpfiles
-Source99 : https://download.tuxfamily.org/chrony/chrony-3.2.tar.gz.asc
+Source99 : https://download.tuxfamily.org/chrony/chrony-3.3.tar.gz.asc
 Summary  : An NTP client/server
 Group    : Development/Tools
 License  : GPL-2.0
@@ -67,7 +67,7 @@ doc components for the chrony package.
 
 
 %prep
-%setup -q -n chrony-3.2
+%setup -q -n chrony-3.3
 %patch1 -p1
 
 %build
@@ -75,12 +75,12 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1518124725
+export SOURCE_DATE_EPOCH=1522848047
 %configure --disable-static --with-user=chrony --enable-debug
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1518124725
+export SOURCE_DATE_EPOCH=1522848047
 rm -rf %{buildroot}
 %make_install install-service install-conf install-examples
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
