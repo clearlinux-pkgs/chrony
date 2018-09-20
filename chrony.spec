@@ -5,19 +5,20 @@
 # Source0 file verified with key 0x5FF06F29BA1E013B (mlichvar@redhat.com)
 #
 Name     : chrony
-Version  : 3.3
-Release  : 4
-URL      : https://download.tuxfamily.org/chrony/chrony-3.3.tar.gz
-Source0  : https://download.tuxfamily.org/chrony/chrony-3.3.tar.gz
+Version  : 3.4
+Release  : 5
+URL      : https://download.tuxfamily.org/chrony/chrony-3.4.tar.gz
+Source0  : https://download.tuxfamily.org/chrony/chrony-3.4.tar.gz
 Source1  : chrony.tmpfiles
-Source99 : https://download.tuxfamily.org/chrony/chrony-3.3.tar.gz.asc
-Summary  : An NTP client/server
+Source99 : https://download.tuxfamily.org/chrony/chrony-3.4.tar.gz.asc
+Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0
 Requires: chrony-bin
 Requires: chrony-config
 Requires: chrony-data
-Requires: chrony-doc
+Requires: chrony-license
+Requires: chrony-man
 BuildRequires : pkgconfig(libcap)
 BuildRequires : pkgconfig(ncurses)
 BuildRequires : pkgconfig(nss)
@@ -25,18 +26,21 @@ BuildRequires : readline-dev
 Patch1: 0001-Adapting-to-Clear-Linux.patch
 
 %description
-chrony is a client and server for the Network Time Protocol (NTP).
-This program keeps your computer's clock accurate. It was specially
-designed to support systems with intermittent Internet connections,
-but it also works well in permanently connected environments. It can
-also use hardware reference clocks, the system real-time clock, or
-manual input as time references.
+What is chrony?
+===============
+chrony is a versatile implementation of the Network Time Protocol (NTP).
+It can synchronise the system clock with NTP servers, reference clocks
+(e.g. GPS receiver), and manual input using wristwatch and keyboard.
+It can also operate as an NTPv4 (RFC 5905) server and peer to provide
+a time service to other computers in the network.
 
 %package bin
 Summary: bin components for the chrony package.
 Group: Binaries
-Requires: chrony-data
-Requires: chrony-config
+Requires: chrony-data = %{version}-%{release}
+Requires: chrony-config = %{version}-%{release}
+Requires: chrony-license = %{version}-%{release}
+Requires: chrony-man = %{version}-%{release}
 
 %description bin
 bin components for the chrony package.
@@ -61,13 +65,30 @@ data components for the chrony package.
 %package doc
 Summary: doc components for the chrony package.
 Group: Documentation
+Requires: chrony-man = %{version}-%{release}
 
 %description doc
 doc components for the chrony package.
 
 
+%package license
+Summary: license components for the chrony package.
+Group: Default
+
+%description license
+license components for the chrony package.
+
+
+%package man
+Summary: man components for the chrony package.
+Group: Default
+
+%description man
+man components for the chrony package.
+
+
 %prep
-%setup -q -n chrony-3.3
+%setup -q -n chrony-3.4
 %patch1 -p1
 
 %build
@@ -75,13 +96,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1522848047
+export SOURCE_DATE_EPOCH=1537480828
 %configure --disable-static --with-user=chrony --enable-debug
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1522848047
+export SOURCE_DATE_EPOCH=1537480828
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/doc/chrony
+cp COPYING %{buildroot}/usr/share/doc/chrony/COPYING
 %make_install install-service install-conf install-examples
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/tmpfiles.d/chrony.conf
@@ -104,8 +127,15 @@ install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/tmpfiles.d/chrony.conf
 /usr/share/defaults/chrony/chrony.conf
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 %doc /usr/share/doc/chrony/*
-%doc /usr/share/man/man1/*
-%doc /usr/share/man/man5/*
-%doc /usr/share/man/man8/*
+
+%files license
+%defattr(-,root,root,-)
+/usr/share/doc/chrony/COPYING
+
+%files man
+%defattr(-,root,root,-)
+/usr/share/man/man1/chronyc.1
+/usr/share/man/man5/chrony.conf.5
+/usr/share/man/man8/chronyd.8
