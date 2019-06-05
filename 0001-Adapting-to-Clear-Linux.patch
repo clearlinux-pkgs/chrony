@@ -95,7 +95,7 @@ index 4ffe3b1..24c654f 100644
  
  [Service]
 -Type=forking
--PIDFile=/var/run/chrony/chronyd.pid
+-PIDFile=/run/chrony/chronyd.pid
 -EnvironmentFile=-/etc/sysconfig/chronyd
 -ExecStart=/usr/sbin/chronyd $OPTIONS
 +ExecStart=/usr/sbin/chronyd -d
