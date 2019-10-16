@@ -4,7 +4,7 @@
 #
 Name     : chrony
 Version  : 3.5
-Release  : 6
+Release  : 7
 URL      : https://download.tuxfamily.org/chrony/chrony-3.5.tar.gz
 Source0  : https://download.tuxfamily.org/chrony/chrony-3.5.tar.gz
 Source1  : chrony.tmpfiles
