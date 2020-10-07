@@ -1,4 +1,4 @@
-From f3f4fed0c9aba131d8aa949259063168e6d49e51 Mon Sep 17 00:00:00 2001
+From 0dbd73492e2878737380e57d99457038f5072b1b Mon Sep 17 00:00:00 2001
 From: "Brett T. Warden" <brett.t.warden@intel.com>
 Date: Mon, 5 Feb 2018 13:52:50 -0800
 Subject: [PATCH] Adapting to Clear Linux
@@ -23,15 +23,15 @@ Signed-off-by: Brett T. Warden <brett.t.warden@intel.com>
  create mode 100644 chrony.conf
 
 diff --git a/Makefile.in b/Makefile.in
-index 5a4aeee..6c640d0 100644
+index 9a51df20074a..a1fd80cf0fe8 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -26,6 +26,8 @@ BINDIR=@BINDIR@
- SBINDIR=@SBINDIR@
- LOCALSTATEDIR=@LOCALSTATEDIR@
- CHRONYVARDIR=@CHRONYVARDIR@
-+STATELESSDIR=@PREFIX@/share/defaults/chrony
-+SYSTEMDDIR=@PREFIX@/lib/systemd/system
+@@ -27,6 +27,8 @@ SBINDIR = @SBINDIR@
+ LOCALSTATEDIR = @LOCALSTATEDIR@
+ CHRONYVARDIR = @CHRONYVARDIR@
+ DESTDIR =
++STATELESSDIR = @PREFIX@/share/defaults/chrony
++SYSTEMDDIR = @PREFIX@/lib/systemd/system
  
  CC = @CC@
  CFLAGS = @CFLAGS@
@@ -56,7 +56,7 @@ index 5a4aeee..6c640d0 100644
  
 diff --git a/chrony.conf b/chrony.conf
 new file mode 100644
-index 0000000..c79cb36
+index 000000000000..c79cb3682739
 --- /dev/null
 +++ b/chrony.conf
 @@ -0,0 +1,6 @@
@@ -67,10 +67,10 @@ index 0000000..c79cb36
 +rtcfile /var/lib/chrony/rtc
 +rtconutc
 diff --git a/configure b/configure
-index 45eddf1..6912981 100755
+index 845b096283c8..3cf2531f0e06 100755
 --- a/configure
 +++ b/configure
-@@ -934,6 +934,7 @@ if [ "x$SETCHRONYVARDIR" != "x" ]; then
+@@ -1025,6 +1025,7 @@ if [ "x$SETCHRONYVARDIR" != "x" ]; then
    CHRONYVARDIR=$SETCHRONYVARDIR
  fi
  
@@ -78,16 +78,16 @@ index 45eddf1..6912981 100755
  add_def DEFAULT_CONF_FILE "\"$SYSCONFDIR/chrony.conf\""
  add_def DEFAULT_HWCLOCK_FILE "\"$default_hwclockfile\""
  add_def DEFAULT_PID_FILE "\"$default_pidfile\""
-@@ -969,6 +970,7 @@ do
+@@ -1060,6 +1061,7 @@ do
+           s%@LIBS@%${LIBS}%;\
            s%@EXTRA_LIBS@%${EXTRA_LIBS}%;\
            s%@EXTRA_CLI_LIBS@%${EXTRA_CLI_LIBS}%;\
-           s%@HASH_OBJ@%${HASH_OBJ}%;\
 +          s%@PREFIX@%${PREFIX}%;\
            s%@SYSCONFDIR@%${SYSCONFDIR}%;\
            s%@BINDIR@%${BINDIR}%;\
            s%@SBINDIR@%${SBINDIR}%;\
 diff --git a/examples/chronyd.service b/examples/chronyd.service
-index 4ffe3b1..24c654f 100644
+index 289548cbab87..24c654f4dda9 100644
 --- a/examples/chronyd.service
 +++ b/examples/chronyd.service
 @@ -6,10 +6,7 @@ Conflicts=ntpd.service systemd-timesyncd.service
@@ -103,10 +103,10 @@ index 4ffe3b1..24c654f 100644
  ProtectHome=yes
  ProtectSystem=full
 diff --git a/main.c b/main.c
-index ab1b71a..1956226 100644
+index b2149b1eea32..4be9ae6b1e9b 100644
 --- a/main.c
 +++ b/main.c
-@@ -391,6 +391,7 @@ int main
+@@ -430,6 +430,7 @@ int main
  (int argc, char **argv)
  {
    const char *conf_file = DEFAULT_CONF_FILE;
@@ -114,7 +114,7 @@ index ab1b71a..1956226 100644
    const char *progname = argv[0];
    char *user = NULL, *log_file = NULL;
    struct passwd *pw;
-@@ -512,7 +513,11 @@ int main
+@@ -566,7 +567,11 @@ int main
    /* Parse the config file or the remaining command line arguments */
    config_args = argc - optind;
    if (!config_args) {
@@ -128,5 +128,5 @@ index ab1b71a..1956226 100644
      for (; optind < argc; optind++)
        CNF_ParseLine(NULL, config_args + optind - argc + 1, argv[optind]);
 -- 
-2.15.1
+2.28.0
 
