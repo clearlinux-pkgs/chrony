@@ -90,18 +90,13 @@ diff --git a/examples/chronyd.service b/examples/chronyd.service
 index 289548cbab87..24c654f4dda9 100644
 --- a/examples/chronyd.service
 +++ b/examples/chronyd.service
-@@ -6,10 +6,7 @@ Conflicts=ntpd.service systemd-timesyncd.service
- ConditionCapability=CAP_SYS_TIME
- 
+@@ -6,5 +6,2 @@ Conflicts=ntpd.service systemd-timesyncd.service
  [Service]
 -Type=forking
 -PIDFile=/run/chrony/chronyd.pid
 -EnvironmentFile=-/etc/sysconfig/chronyd
 -ExecStart=/usr/sbin/chronyd $OPTIONS
 +ExecStart=/usr/sbin/chronyd -d
- PrivateTmp=yes
- ProtectHome=yes
- ProtectSystem=full
 diff --git a/main.c b/main.c
 index b2149b1eea32..4be9ae6b1e9b 100644
 --- a/main.c
