@@ -5,9 +5,9 @@
 #
 Name     : chrony
 Version  : 4.4
-Release  : 13
-URL      : https://download.tuxfamily.org/chrony/chrony-4.4.tar.gz
-Source0  : https://download.tuxfamily.org/chrony/chrony-4.4.tar.gz
+Release  : 14
+URL      : https://chrony-project.org/releases/chrony-4.4.tar.gz
+Source0  : https://chrony-project.org/releases/chrony-4.4.tar.gz
 Source1  : chrony.tmpfiles
 Summary  : No detailed summary available
 Group    : Development/Tools
@@ -109,7 +109,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1691619033
+export SOURCE_DATE_EPOCH=1691619444
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
 export FCFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
@@ -119,7 +119,7 @@ export CXXFLAGS="$CXXFLAGS -fdebug-types-section -femit-struct-debug-baseonly -f
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1691619033
+export SOURCE_DATE_EPOCH=1691619444
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/chrony
 cp %{_builddir}/chrony-%{version}/COPYING %{buildroot}/usr/share/package-licenses/chrony/06877624ea5c77efe3b7e39b0f909eda6e25a4ec || :

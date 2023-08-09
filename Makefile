@@ -1,5 +1,5 @@
 PKG_NAME := chrony
-URL = https://download.tuxfamily.org/chrony/chrony-4.4.tar.gz
+URL = https://chrony-project.org/releases/chrony-4.4.tar.gz
 ARCHIVES = 
 
 include ../common/Makefile.common
