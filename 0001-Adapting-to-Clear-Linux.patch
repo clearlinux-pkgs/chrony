@@ -1,4 +1,4 @@
-From 0dbd73492e2878737380e57d99457038f5072b1b Mon Sep 17 00:00:00 2001
+From ee2e851ba86d4c1b9c2c5879123afd97ed2c9afd Mon Sep 17 00:00:00 2001
 From: "Brett T. Warden" <brett.t.warden@intel.com>
 Date: Mon, 5 Feb 2018 13:52:50 -0800
 Subject: [PATCH] Adapting to Clear Linux
@@ -6,24 +6,21 @@ Subject: [PATCH] Adapting to Clear Linux
 Add a default stateless configuration in /usr/share/defaults/chrony as a
 fallback if /etc/chrony.conf does not exist.
 
-Modify the sample chronyd.service to remove non-preferred parameters and
-run the daemon in the foreground instead of forking, and install the
-service.
+Install the chronyd service.
 
 Install sample configs for reference.
 
 Signed-off-by: Brett T. Warden <brett.t.warden@intel.com>
 ---
- Makefile.in              | 14 ++++++++++++++
- chrony.conf              |  6 ++++++
- configure                |  2 ++
- examples/chronyd.service |  5 +----
- main.c                   |  7 ++++++-
- 5 files changed, 29 insertions(+), 5 deletions(-)
+ Makefile.in | 14 ++++++++++++++
+ chrony.conf |  6 ++++++
+ configure   |  2 ++
+ main.c      |  7 ++++++-
+ 4 files changed, 28 insertions(+), 1 deletion(-)
  create mode 100644 chrony.conf
 
 diff --git a/Makefile.in b/Makefile.in
-index 9a51df20074a..a1fd80cf0fe8 100644
+index 2153c35..72b6293 100644
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -27,6 +27,8 @@ SBINDIR = @SBINDIR@
@@ -35,7 +32,7 @@ index 9a51df20074a..a1fd80cf0fe8 100644
  
  CC = @CC@
  CFLAGS = @CFLAGS@
-@@ -97,6 +99,18 @@ install: chronyd chronyc
+@@ -103,6 +105,18 @@ install: chronyd chronyc
  	chmod 755 $(DESTDIR)$(BINDIR)/chronyc
  	$(MAKE) -C doc install
  
@@ -56,7 +53,7 @@ index 9a51df20074a..a1fd80cf0fe8 100644
  
 diff --git a/chrony.conf b/chrony.conf
 new file mode 100644
-index 000000000000..c79cb3682739
+index 0000000..c79cb36
 --- /dev/null
 +++ b/chrony.conf
 @@ -0,0 +1,6 @@
@@ -67,10 +64,10 @@ index 000000000000..c79cb3682739
 +rtcfile /var/lib/chrony/rtc
 +rtconutc
 diff --git a/configure b/configure
-index 845b096283c8..3cf2531f0e06 100755
+index bcd6944..c4236ef 100755
 --- a/configure
 +++ b/configure
-@@ -1025,6 +1025,7 @@ if [ "x$SETCHRONYVARDIR" != "x" ]; then
+@@ -1075,6 +1075,7 @@ if [ "x$SETCHRONYVARDIR" != "x" ]; then
    CHRONYVARDIR=$SETCHRONYVARDIR
  fi
  
@@ -78,7 +75,7 @@ index 845b096283c8..3cf2531f0e06 100755
  add_def DEFAULT_CONF_FILE "\"$SYSCONFDIR/chrony.conf\""
  add_def DEFAULT_HWCLOCK_FILE "\"$default_hwclockfile\""
  add_def DEFAULT_PID_FILE "\"$default_pidfile\""
-@@ -1060,6 +1061,7 @@ do
+@@ -1111,6 +1112,7 @@ do
            s%@LIBS@%${LIBS}%;\
            s%@EXTRA_LIBS@%${EXTRA_LIBS}%;\
            s%@EXTRA_CLI_LIBS@%${EXTRA_CLI_LIBS}%;\
@@ -86,22 +83,11 @@ index 845b096283c8..3cf2531f0e06 100755
            s%@SYSCONFDIR@%${SYSCONFDIR}%;\
            s%@BINDIR@%${BINDIR}%;\
            s%@SBINDIR@%${SBINDIR}%;\
-diff --git a/examples/chronyd.service b/examples/chronyd.service
-index 289548cbab87..24c654f4dda9 100644
---- a/examples/chronyd.service
-+++ b/examples/chronyd.service
-@@ -6,5 +6,2 @@ Conflicts=ntpd.service systemd-timesyncd.service
- [Service]
--Type=forking
--PIDFile=/run/chrony/chronyd.pid
--EnvironmentFile=-/etc/sysconfig/chronyd
--ExecStart=/usr/sbin/chronyd $OPTIONS
-+ExecStart=/usr/sbin/chronyd -d
 diff --git a/main.c b/main.c
-index b2149b1eea32..4be9ae6b1e9b 100644
+index 77d62e3..d0a7029 100644
 --- a/main.c
 +++ b/main.c
-@@ -430,6 +430,7 @@ int main
+@@ -485,6 +485,7 @@ int main
  (int argc, char **argv)
  {
    const char *conf_file = DEFAULT_CONF_FILE;
@@ -109,7 +95,7 @@ index b2149b1eea32..4be9ae6b1e9b 100644
    const char *progname = argv[0];
    char *user = NULL, *log_file = NULL;
    struct passwd *pw;
-@@ -566,7 +567,11 @@ int main
+@@ -625,7 +626,11 @@ int main
    /* Parse the config file or the remaining command line arguments */
    config_args = argc - optind;
    if (!config_args) {
@@ -123,5 +109,5 @@ index b2149b1eea32..4be9ae6b1e9b 100644
      for (; optind < argc; optind++)
        CNF_ParseLine(NULL, config_args + optind - argc + 1, argv[optind]);
 -- 
-2.28.0
+2.49.0
 
